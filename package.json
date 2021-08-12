@@ -1,0 +1,19 @@
+{
+  "name": "mbs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/index.js",
+  "bin": {
+    "mbsServer": "index.js"
+  },
+  "scripts": {
+    "dev": "nodemon bin/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  }
+}
