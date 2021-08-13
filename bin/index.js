@@ -8,7 +8,9 @@ const PORT = 5000;
 // 静态文件路由
 app.use(express.static('static'));
 
-
+app.get('/test', (req, res, next) => {
+    res.send('成功');
+})
 // 主界面banner路由
 app.get('/index/banner', async (req, res, next) => {
     try {
