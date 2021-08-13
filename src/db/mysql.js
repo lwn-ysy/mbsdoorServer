@@ -46,9 +46,9 @@ function getIndexCategoryList() {
     return promise;
 }
 
-//[3] index界面 shop图片数据,参数是number类型，唯一值
-function getIndexShopList(categoryID) {
-    let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} `;
+//[3] index界面 shop图片数据,参数是number类型，唯一值;offset偏移值，
+function getIndexShopList(categoryID, offset = 0) {
+    let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} order by shopID limit 5 offset ${offset}`;
     let promise = new Promise(async (resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {

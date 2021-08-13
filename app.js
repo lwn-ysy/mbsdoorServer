@@ -6,13 +6,13 @@ const path = require('path');
 
 const { getIndexBannerlist, getIndexCategoryList, getIndexShopList, getTag } = require('./src/db/mysql');
 
-const PORT = 443;
+const PORT = 5000;
 
 const option = {
     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
     passphrase: '3434902qwe'
 };
-const httpsServer = https.createServer(option,app);
+const httpsServer = https.createServer(option, app);
 // 静态文件路由
 app.use(express.static('static'));
 
@@ -40,9 +40,10 @@ app.get('/index/category', async (req, res, next) => {
 // 主界面shop路由
 app.get('/index/shop', async (req, res, next) => {
     let categoryID = req.query.categoryID;
+    let offset = req.query.offset;
     console.log(categoryID);
     try {
-        const categoryData = await getIndexShopList(categoryID);
+        const categoryData = await getIndexShopList(categoryID, offset);
         res.json(categoryData);
     } catch (err) {
         next(err);
