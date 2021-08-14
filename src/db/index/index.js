@@ -1,7 +1,7 @@
 // 数据库处理
 
 const mysql = require('mysql');
-const { MYSQL_CONFIG } = require('./config');
+const { MYSQL_CONFIG } = require('../config');
 
 
 // 创建链接mysql
@@ -84,23 +84,5 @@ function getTag(shopID) {
     return promise;
 
 }
-
-// function getTag(shopID) {
-//     let sql = `select tagName from tag where shopID='${shopID}'`;
-//     connection.query(sql, (err, result) => {
-//         if (err) {
-//             reject(err);
-//             return;
-//         }
-//         let tag = [];
-//         result.forEach(item => {
-//             tag.push(item.tagName);
-//         });
-//         console.log('tag:', tag);
-//         return tag;
-//     })
-
-// }
-
 
 module.exports = { getIndexBannerlist, getIndexCategoryList, getIndexShopList, getTag };

@@ -4,62 +4,34 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-const { getIndexBannerlist, getIndexCategoryList, getIndexShopList, getTag } = require('./src/db/mysql');
+
+
+const personal = require('./src/routes/personal/personal');
+const index = require('./src/routes/index')
 
 const PORT = 5000;
 
-const option = {
-    pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
-    passphrase: '3434902qwe'
-};
-const httpsServer = https.createServer(option, app);
+
+//上线环境
+
+
+//dev开发环境
+// const option = {
+//     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
+//     passphrase: '3434902qwe'
+// };
+// const httpsServer = https.createServer(option, app);
+
+
+
 // 静态文件路由
-app.use(express.static('static'));
+app.use('/static', express.static('static'));
 
-app.get('/test', (req, res, next) => {
-    res.send('成功');
-})
-// 主界面banner路由
-app.get('/index/banner', async (req, res, next) => {
-    try {
-        const bannerData = await getIndexBannerlist(); // return的是res数据，而不使用await，return的是promise
-        res.json(bannerData);
-    } catch (err) {
-        next(err);
-    }
-})
-// 主界面category路由
-app.get('/index/category', async (req, res, next) => {
-    try {
-        const shopData = await getIndexCategoryList();
-        res.json(shopData);
-    } catch (err) {
-        next(err);
-    }
-})
-// 主界面shop路由
-app.get('/index/shop', async (req, res, next) => {
-    let categoryID = req.query.categoryID;
-    let offset = req.query.offset;
-    console.log(categoryID);
-    try {
-        const categoryData = await getIndexShopList(categoryID, offset);
-        res.json(categoryData);
-    } catch (err) {
-        next(err);
-    }
-})
-app.get('/index/tag', async (req, res, next) => {
-    let shopID = req.query.shopID;
-    console.log(shopID);
-    try {
-        const tagData = await getTag(shopID);
-        res.json(tagData);
-    } catch (err) {
-        next(err);
-    }
-})
 
+
+//常规路由
+app.use('/personal', personal)
+app.use('/index', index)
 
 // 500界面
 app.use((err, req, res, next) => {
@@ -67,7 +39,12 @@ app.use((err, req, res, next) => {
 });
 
 
+//上线环境
+// httpsServer.listen(PORT, () => {
+//     console.log("server running at port ", PORT)
+// })
 
-httpsServer.listen(PORT, () => {
+//dev环境
+app.listen(PORT, () => {
     console.log("server running at port ", PORT)
 })
