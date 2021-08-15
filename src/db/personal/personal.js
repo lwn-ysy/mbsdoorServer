@@ -9,9 +9,9 @@ const connection = mysql.createConnection(MYSQL_CONFIG);
 connection.connect();
 
 
-// [1]先获取collect收藏表里的数据
-function getCollect(userID, table) {
-    let sql = `select * from mbsdoor.${table} where userID='${userID}'`;
+// [1]先获取collect收藏or history表里的shop_id数据
+function getCollect(openID, table) {
+    let sql = `select * from mbsdoor.${table} where openID='${openID}'`;
     let promise = new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
@@ -28,6 +28,26 @@ function getCollect(userID, table) {
     return promise;
 }
 
+// 改变collect or history表里的数据，
+// 先查询，如果没有就增加，有的话就删除
+function changeCollect(openID, shopID, table) {
+    let get_sql = `select * from mbsdoor.${table} where openID='${openID}' and shopID='${shopID}'`;
+    let delete_sql = `delete  from mbsdoor.${table} where openID='${openID}' and shopID='${shopID}'`;
+    let insert_sql = `insert  into mbsdoor.${table} (openID, shopID) values ('${openID}', '${shopID}')`;
+    return new Promise((resolve, reject) => {
+        connection.query(get_sql, (err, result) => {
+            console.log(result);
+            if (result.length > 0) {
+                connection.query(delete_sql);// 有则删除
+            } else {
+                connection.query(insert_sql);// 无则增加
+            };
+            resolve();
+        })
+    })
+}
+
+
 // 获取单个shop数据的函数
 function getShop(shopID) {
     let sql = `select * from mbsdoor.shop where shopID='${shopID}'`;
@@ -42,9 +62,9 @@ function getShop(shopID) {
     })
 }
 // 获取所有shops数据的函数
-// 第一个参数是用户userID，第二个是区分来自历史记录还是收藏（目前对应history,collect两个表
-async function getPersonalShopList(userID, table) {
-    let shopID_arry = await getCollect(userID, table);
+// 第一个参数是用户openID，第二个是区分来自历史记录还是收藏（目前对应history,collect两个表
+async function getPersonalShopList(openID, table) {
+    let shopID_arry = await getCollect(openID, table);
     return new Promise((resolve, reject) => {
         try {
             let _arry = [];
@@ -64,5 +84,5 @@ async function getPersonalShopList(userID, table) {
     })
 }
 module.exports = {
-    getPersonalShopList
+    getPersonalShopList, getCollect, changeCollect
 }
