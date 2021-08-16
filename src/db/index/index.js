@@ -37,7 +37,6 @@ function getIndexCategoryList() {
         connection.query(sql, (err, result) => {
             if (err) {
                 reject(err);
-                return;
             }
 
             resolve(result);
@@ -51,9 +50,11 @@ function getIndexShopList(categoryID, offset = 0) {
     let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} order by shopID limit 5 offset ${offset}`;
     let promise = new Promise(async (resolve, reject) => {
         connection.query(sql, (err, result) => {
+            if (!result) {
+                reject("连接数据库问题，可能语句错误或者未连上，查询不成功，返回undefine");
+            }
             if (err) {
                 reject(err);
-                return;
             }
             resolve(result);
         })
@@ -71,7 +72,6 @@ function getTag(shopID) {
         connection.query(sql, (err, result) => {
             if (err) {
                 reject(err);
-                return;
             }
             let tag = [];
             result.forEach(item => {

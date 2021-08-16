@@ -31,7 +31,7 @@ router.post('/collect', async (req, res, next) => {
     let openID = req.body.openID;
     let shopID = req.body.shopID;
     let table = 'collect';
-    console.log("data:", req.body);
+    console.log("前端传来的数据data:", req.body);
     await changeCollect(openID, shopID, table);
 
     // 重新查询，返回新数据
