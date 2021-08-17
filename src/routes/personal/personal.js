@@ -46,8 +46,9 @@ router.post('/collect', async (req, res, next) => {
 
 // 点赞的查询路由
 router.get('/dianzan', async (req, res, next) => {
+    let shopID = req.query.shopID;
     try {
-        let countData = await getZan();
+        let countData = await getZan(shopID);
         res.json(countData);
     } catch (error) {
         next(error);

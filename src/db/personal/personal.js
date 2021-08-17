@@ -93,8 +93,8 @@ async function getPersonalShopList(openID, table) {
 
 
 // 点赞的，数据库查询
-function getZan() {
-    let sql = `select count(1) from mbsdoor.dianzan`;
+function getZan(shopID) {
+    let sql = `select count(1) from mbsdoor.dianzan where shopID='${shopID}'`;
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
