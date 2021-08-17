@@ -65,7 +65,7 @@ router.post('/dianzan', async (req, res, next) => {
 
     //TODO: 实际上就是跳转到get方法的路由
     try {
-        let countData = await getZan();
+        let countData = await getZan(shopID);
         res.json(countData);
     } catch (error) {
         next(error);
