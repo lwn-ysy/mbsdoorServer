@@ -37,6 +37,7 @@ function getIndexCategoryList() {
         connection.query(sql, (err, result) => {
             if (err) {
                 reject(err);
+                return;
             }
 
             resolve(result);
@@ -55,6 +56,7 @@ function getIndexShopList(categoryID, offset = 0) {
             }
             if (err) {
                 reject(err);
+                return;
             }
             resolve(result);
         })
@@ -72,6 +74,7 @@ function getTag(shopID) {
         connection.query(sql, (err, result) => {
             if (err) {
                 reject(err);
+                return;
             }
             let tag = [];
             result.forEach(item => {

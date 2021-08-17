@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const { getPersonalShopList, getCollect, changeCollect } = require('../../db/personal/personal');
+const { getPersonalShopList, getCollect, changeCollect, getZan, changeZan } = require('../../db/personal/personal');
 
 //  personal界面的，路由处理
 
@@ -44,6 +44,30 @@ router.post('/collect', async (req, res, next) => {
 
 })
 
+// 点赞的查询路由
+router.get('/dianzan', async (req, res, next) => {
+    try {
+        let countData = await getZan();
+        res.json(countData);
+    } catch (error) {
+        next(error);
+    }
+})
+
+// 点赞的增删路由
+router.post('/dianzan', async (req, res, next) => {
+    let openID = req.body.openID;
+    let shopID = req.body.shopID;
+
+    await changeZan(openID, shopID);
 
 
+    //TODO: 实际上就是跳转到get方法的路由
+    try {
+        let countData = await getZan();
+        res.json(countData);
+    } catch (error) {
+        next(error);
+    }
+})
 module.exports = router;

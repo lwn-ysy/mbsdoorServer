@@ -14,12 +14,9 @@ function getCollect(openID, table) {
     let sql = `select * from mbsdoor.${table} where openID='${openID}'`;
     let promise = new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
-            if (!result) {
-                console.log('getCollect里的result出错：', result)
-                reject("连接数据库问题，可能语句错误或者未连上，查询不成功，返回undefine");
-            }
             if (err) {
                 reject(err);
+                return;
             }
             let collectShopList = [];
             result.forEach(item => {
@@ -41,8 +38,9 @@ function changeCollect(openID, shopID, table) {
         connection.query(get_sql, (err, result) => {
             if (!result) {
                 reject("连接数据库问题，可能语句错误或者未连上，查询不成功，返回undefine");
+                return;
             }
-            console.log("changeCollect查询返回的数据：",result);
+            console.log("changeCollect查询返回的数据：", result);
             if (result.length > 0) {
                 connection.query(delete_sql, (err, res) => {
                     resolve();
@@ -52,7 +50,6 @@ function changeCollect(openID, shopID, table) {
                     resolve()
                 });// 无则增加
             };
-            resolve();
         })
     })
 }
@@ -93,6 +90,49 @@ async function getPersonalShopList(openID, table) {
         }
     })
 }
+
+
+// 点赞的，数据库查询
+function getZan() {
+    let sql = `select count(1) from mbsdoor.dianzan`;
+    return new Promise((resolve, reject) => {
+        connection.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            // 处理数据
+            let count = result[0]['count(1)'];
+            resolve(count);
+        })
+    })
+}
+
+function changeZan(openID, shopID) {
+    // TODO: 每次都要查询两次，后期需要优化
+    let get_sql = `select * from mbsdoor.dianzan where openID='${openID}' and shopID='${shopID}'`;
+    let delete_sql = `delete from mbsdoor.dianzan where openID='${openID}' and shopID='${shopID}'`;
+    let insert_sql = `insert into mbsdoor.dianzan (openID, shopID) values ('${openID}', '${shopID}')`;
+    return new Promise((resolve, reject) => {
+        connection.query(get_sql, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            if (result.length > 0) {
+                connection.query(delete_sql, (err, res) => {
+                    resolve();
+                });// 有则删除
+            } else {
+                connection.query(insert_sql, (err, res) => {
+                    resolve()
+                });// 无则增加
+            };
+        })
+    })
+}
+
+
 module.exports = {
-    getPersonalShopList, getCollect, changeCollect
+    getPersonalShopList, getCollect, changeCollect, getZan, changeZan
 }
