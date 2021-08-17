@@ -33,7 +33,7 @@ router.get('/shop', async (req, res, next) => {
     let offset = req.query.offset;
     let openID = req.query.openID;
     try {
-        const shopList_dianzan = await getShopList_dianzan(categoryID, offset);
+        const shopList_dianzan = await getShopList_dianzan(categoryID, offset, openID);
         const shopList_collect = await getShopList_collect(shopList_dianzan, openID)
         res.json(shopList_collect);
     } catch (err) {

@@ -15,33 +15,13 @@ router.get('/collectlist', async (req, res, next) => {
         next(err)
     }
 })
-// 获取收藏的shop_id数据，用于是否标亮收藏icon
-router.get('/collect', async (req, res, next) => {
-    let openID = req.query.openID;
-    let table = 'collect';
-    try {
-        let collectData = await getCollect(openID, table);
-        res.json(collectData);
-    } catch (error) {
-        next(error);
-    }
-})
+
 // 修改,有则删除，无责增加
 router.post('/collect', async (req, res, next) => {
     let openID = req.body.openID;
     let shopID = req.body.shopID;
     let table = 'collect';
-    console.log("前端传来的数据data:", req.body);
     await changeCollect(openID, shopID, table);
-
-    // 重新查询，返回新数据
-    try {
-        let collectData = await getCollect(openID, table);
-        res.json(collectData);
-    } catch (error) {
-        next(error);
-    }
-
 })
 
 // 点赞的查询路由

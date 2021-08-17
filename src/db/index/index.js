@@ -47,8 +47,9 @@ function getIndexCategoryList() {
 }
 
 // 点赞的number，数据库查询,用于getShopList_dianzan
-function getZanCount(shopListItem, shopID) {
+function getZanCount(shopListItem, shopID, oepnID) {
     let sql = `select count(1) from mbsdoor.dianzan where shopID='${shopID}'`;
+    let sql_isDianzan = `select * from mbsdoor.dianzan where shopID='${shopID}' and openID='${oepnID}' `
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
@@ -58,7 +59,14 @@ function getZanCount(shopListItem, shopID) {
             // 处理数据
             let count = result[0]['count(1)'];
             shopListItem.dianzan = count;
-            resolve(shopListItem);
+            connection.query(sql_isDianzan, (er_1, res_1) => {
+                if (er_1) {
+                    reject(er_1);
+                }
+                let isDianzan = res_1.length === 1 ? true : false;
+                shopListItem.isDianzan = isDianzan;
+                resolve(shopListItem);
+            })
         })
     })
 }
@@ -66,7 +74,7 @@ function getZanCount(shopListItem, shopID) {
 
 //[3.1] index界面 shop图片数据,参数是number类型，唯一值;offset偏移值，
 
-function getShopList_dianzan(categoryID, offset = 0) {
+function getShopList_dianzan(categoryID, offset = 0,openID) {
     let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} order by shopID limit 5 offset ${offset}`;
     let promise = new Promise(async (resolve, reject) => {
         connection.query(sql, async (err, result) => {
@@ -77,7 +85,7 @@ function getShopList_dianzan(categoryID, offset = 0) {
             // 遍历result,根据shopID查询dianzan数据表
             let _arry = [];
             result.forEach(item => {
-                let _promise = getZanCount(item, item.shopID);
+                let _promise = getZanCount(item, item.shopID, openID);
                 _arry.push(_promise);
             })
             await Promise.all(_arry).then(res => {
