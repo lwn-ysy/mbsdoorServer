@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getIndexBannerlist, getIndexCategoryList, getIndexShopList } = require('../../db/index/index');
+const { getIndexBannerlist, getIndexCategoryList, getShopList_dianzan, getShopList_collect } = require('../../db/index/index');
 
 
 // index界面的，路由处理
@@ -31,9 +31,11 @@ router.get('/category', async (req, res, next) => {
 router.get('/shop', async (req, res, next) => {
     let categoryID = req.query.categoryID;
     let offset = req.query.offset;
+    let openID = req.query.openID;
     try {
-        const categoryData = await getIndexShopList(categoryID, offset);
-        res.json(categoryData);
+        const shopList_dianzan = await getShopList_dianzan(categoryID, offset);
+        const shopList_collect = await getShopList_collect(shopList_dianzan, openID)
+        res.json(shopList_collect);
     } catch (err) {
         next(err);
     }

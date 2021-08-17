@@ -46,46 +46,87 @@ function getIndexCategoryList() {
     return promise;
 }
 
-//[3] index界面 shop图片数据,参数是number类型，唯一值;offset偏移值，
-function getIndexShopList(categoryID, offset = 0) {
+// 点赞的number，数据库查询,用于getShopList_dianzan
+function getZanCount(shopListItem, shopID) {
+    let sql = `select count(1) from mbsdoor.dianzan where shopID='${shopID}'`;
+    return new Promise((resolve, reject) => {
+        connection.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            // 处理数据
+            let count = result[0]['count(1)'];
+            shopListItem.dianzan = count;
+            resolve(shopListItem);
+        })
+    })
+}
+
+
+//[3.1] index界面 shop图片数据,参数是number类型，唯一值;offset偏移值，
+
+function getShopList_dianzan(categoryID, offset = 0) {
     let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} order by shopID limit 5 offset ${offset}`;
     let promise = new Promise(async (resolve, reject) => {
-        connection.query(sql, (err, result) => {
-            if (!result) {
-                reject("连接数据库问题，可能语句错误或者未连上，查询不成功，返回undefine");
-            }
+        connection.query(sql, async (err, result) => {
             if (err) {
                 reject(err);
                 return;
             }
-            resolve(result);
-        })
-
-    })
-    return promise;
-
-}
-
-
-// 获取tap表中的tapName字段
-function getTag(shopID) {
-    let sql = `select tagName from tag where shopID='${shopID}'`;
-    let promise = new Promise((resolve, reject) => {
-        connection.query(sql, (err, result) => {
-            if (err) {
-                reject(err);
-                return;
-            }
-            let tag = [];
+            // 遍历result,根据shopID查询dianzan数据表
+            let _arry = [];
             result.forEach(item => {
-                tag.push(item.tagName);
-            });
-            console.log('tag:', tag);
-            resolve(tag);
+                let _promise = getZanCount(item, item.shopID);
+                _arry.push(_promise);
+            })
+            await Promise.all(_arry).then(res => {
+                resolve(res);
+            })
         })
+
     })
     return promise;
+}
+
+
+// 辅助性函数，查询是否已收藏
+function getCollect(openID, shopID, shopList) {
+    let sql = `select count(1) from mbsdoor.collect where openID='${openID}' and shopID='${shopID}' `;
+    return new Promise((resolve, reject) => {
+        connection.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            let isCollected = result[0]['count(1)'] === 1 ? true : false;
+
+            shopList.isCollected = isCollected;
+            resolve(shopList);
+        })
+    })
 
 }
 
-module.exports = { getIndexBannerlist, getIndexCategoryList, getIndexShopList, getTag };
+// [3.2] 给shop图片数据，增加收藏数据
+// 参数是个数组，必须有shopID属性
+function getShopList_collect(shopList, openID) {
+    return new Promise((resolve, reject) => {
+        try {
+            let _arry = [];
+            shopList.forEach(item => {
+                let shopID = item.shopID;
+                let _promise = getCollect(openID, shopID, item);
+                _arry.push(_promise);
+            })
+            Promise.all(_arry).then(res => {
+                resolve(res);
+            })
+        } catch (error) {
+            reject(error);
+        }
+
+    })
+}
+
+module.exports = { getIndexBannerlist, getIndexCategoryList, getShopList_dianzan, getShopList_collect };
