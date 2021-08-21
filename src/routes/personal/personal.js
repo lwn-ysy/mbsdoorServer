@@ -22,6 +22,7 @@ router.post('/collect', async (req, res, next) => {
     let shopID = req.body.shopID;
     let table = 'collect';
     await changeCollect(openID, shopID, table);
+    res.json();
 })
 
 // 点赞的查询路由

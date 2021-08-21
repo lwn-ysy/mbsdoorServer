@@ -17,16 +17,20 @@ const PORT = 5000;
 
 
 //上线环境
-// const option = {
-//     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
-//     passphrase: '3434902qwe'
-// };
-// const httpsServer = https.createServer(option, app);
+const option = {
+    pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
+    passphrase: '3434902qwe'
+};
+const httpsServer = https.createServer(option, app);
 
 
 
 // 静态文件路由
-app.use('/static', express.static('static'));
+app.use('/static', express.static('static', {
+    maxAge: 600000,
+    lastModified: true,
+    cacheControl: true,
+}));
 
 app.use(bodyParser.json());
 
@@ -34,7 +38,7 @@ app.use(bodyParser.json());
 app.use('/personal', personal);
 app.use('/index', index);
 app.use('/login', login);
-app.use('/showpic',showpic);
+app.use('/showpic', showpic);
 
 // 500界面
 app.use((err, req, res, next) => {
@@ -43,11 +47,11 @@ app.use((err, req, res, next) => {
 
 
 //上线环境
-// httpsServer.listen(PORT, () => {
-//     console.log("server running at port ", PORT)
-// })
-
-//dev环境
-app.listen(PORT, () => {
+httpsServer.listen(PORT, () => {
     console.log("server running at port ", PORT)
 })
+
+//dev环境
+// app.listen(PORT, () => {
+//     console.log("server running at port ", PORT)
+// })
