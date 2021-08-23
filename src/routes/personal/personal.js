@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const { getPersonalShopList, getCollect, changeCollect, getZan, changeZan } = require('../../db/personal/personal');
+const { getPersonalShopList, changeCollect, getZan, changeZan, deleteAllCollect } = require('../../db/personal/personal');
 
 //  personal界面的，路由处理
 
@@ -23,6 +23,19 @@ router.post('/collect', async (req, res, next) => {
     let table = 'collect';
     await changeCollect(openID, shopID, table);
     res.json();
+})
+// 删除所有收藏or历史
+router.delete('/collect', async (req, res, next) => {
+    try {
+        let openID = req.body.openID;
+        let table = 'collect';
+        await deleteAllCollect(openID, table);
+        res.json('删除成功');
+
+    } catch (error) {
+        next(error);
+    }
+
 })
 
 // 点赞的查询路由

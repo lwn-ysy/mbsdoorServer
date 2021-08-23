@@ -28,6 +28,21 @@ function getCollect(openID, table) {
     return promise;
 }
 
+// 删除所有
+function deleteAllCollect(openID,table){
+    let sql = `delete from mbsdoor.${table} where openID='${openID}'`;
+    return new Promise((resolve,reject)=>{
+        connection.query(sql,(err,result)=>{
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve();
+
+        })
+    })
+}
+
 // 改变collect or history表里的数据，
 // 先查询，如果没有就增加，有的话就删除
 function changeCollect(openID, shopID, table) {
@@ -40,7 +55,6 @@ function changeCollect(openID, shopID, table) {
                 reject("连接数据库问题，可能语句错误或者未连上，查询不成功，返回undefine");
                 return;
             }
-            console.log("changeCollect查询返回的数据：", result);
             if (result.length > 0) {
                 connection.query(delete_sql, (err, res) => {
                     resolve();
@@ -134,5 +148,5 @@ function changeZan(openID, shopID) {
 
 
 module.exports = {
-    getPersonalShopList, getCollect, changeCollect, getZan, changeZan
+    getPersonalShopList, deleteAllCollect, changeCollect, getZan, changeZan
 }
