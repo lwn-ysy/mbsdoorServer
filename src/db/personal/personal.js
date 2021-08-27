@@ -37,7 +37,7 @@ function deleteAllCollect(openID,table){
                 reject(err);
                 return;
             }
-            resolve();
+            resolve(result);
 
         })
     })

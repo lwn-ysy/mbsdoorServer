@@ -116,10 +116,34 @@ function getCollect(openID, shopID, shopList) {
 
 }
 
+
+// 返回用户收藏的所有记录
+function  getCollects(openID)
+
 // [3.2] 给shop图片数据，增加收藏数据
 // 参数是个数组，必须有shopID属性
+// TODO: 后期需要改，这算法访问数据库次数太多。
+// 改为：先查询用户所有收藏的数据，然后用includes()判断
 function getShopList_collect(shopList, openID) {
     return new Promise((resolve, reject) => {
+        // let sql = `select * from mbsdoor.collect where openID='${openID}'`;
+        // connection.query(sql,(err,result)=>{
+        //     if (err) {
+        //         reject(err);
+        //         return;
+        //     }
+        //     let collectedList = [];
+        //     result.forEach(item=>{
+        //         collectedList.push(item.shopID);
+        //     });
+        //     let newShopList =  shopList.map(item=>{
+        //         item.isCollected = collectedList.includes(item.shopID) ? true : false;
+        //         return item;
+        //     })
+        //     resolve(newShopList);
+        // })
+
+
         try {
             let _arry = [];
             shopList.forEach(item => {
