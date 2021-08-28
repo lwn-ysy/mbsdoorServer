@@ -74,7 +74,7 @@ function getZanCount(shopListItem, shopID, oepnID) {
 
 //[3.1] index界面 shop图片数据,参数是number类型，唯一值;offset偏移值，
 
-function getShopList_dianzan(categoryID, offset = 0,openID) {
+function getShopList_dianzan(categoryID, offset = 0, openID) {
     let sql = `select * from mbsdoor.shop where categoryID=${parseInt(categoryID)} order by shopID limit 5 offset ${offset}`;
     let promise = new Promise(async (resolve, reject) => {
         connection.query(sql, async (err, result) => {
@@ -118,7 +118,7 @@ function getCollect(openID, shopID, shopList) {
 
 
 // 返回用户收藏的所有记录
-function  getCollects(openID)
+function getCollects(openID) { }
 
 // [3.2] 给shop图片数据，增加收藏数据
 // 参数是个数组，必须有shopID属性
@@ -126,38 +126,39 @@ function  getCollects(openID)
 // 改为：先查询用户所有收藏的数据，然后用includes()判断
 function getShopList_collect(shopList, openID) {
     return new Promise((resolve, reject) => {
-        // let sql = `select * from mbsdoor.collect where openID='${openID}'`;
-        // connection.query(sql,(err,result)=>{
-        //     if (err) {
-        //         reject(err);
-        //         return;
-        //     }
-        //     let collectedList = [];
-        //     result.forEach(item=>{
-        //         collectedList.push(item.shopID);
-        //     });
-        //     let newShopList =  shopList.map(item=>{
-        //         item.isCollected = collectedList.includes(item.shopID) ? true : false;
-        //         return item;
-        //     })
-        //     resolve(newShopList);
-        // })
+        let sql = `select * from mbsdoor.collect where openID='${openID}'`;
+        connection.query(sql, (err, result) => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            //     let collectedList = [];
+            //     result.forEach(item=>{
+            //         collectedList.push(item.shopID);
+            //     });
+            //     let newShopList =  shopList.map(item=>{
+            //         item.isCollected = collectedList.includes(item.shopID) ? true : false;
+            //         return item;
+            //     })
+            //     resolve(newShopList);
 
 
-        try {
-            let _arry = [];
-            shopList.forEach(item => {
-                let shopID = item.shopID;
-                let _promise = getCollect(openID, shopID, item);
-                _arry.push(_promise);
-            })
-            Promise.all(_arry).then(res => {
-                resolve(res);
-            })
-        } catch (error) {
-            reject(error);
-        }
 
+            try {
+                let _arry = [];
+                shopList.forEach(item => {
+                    let shopID = item.shopID;
+                    let _promise = getCollect(openID, shopID, item);
+                    _arry.push(_promise);
+                })
+                Promise.all(_arry).then(res => {
+                    resolve(res);
+                })
+            } catch (error) {
+                reject(error);
+            }
+
+        })
     })
 }
 
