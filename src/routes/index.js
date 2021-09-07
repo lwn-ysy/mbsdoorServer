@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getIndexBannerlist, getIndexCategoryList, getShopList_dianzan, getShopList_collect } = require('../../db/index/index');
+const { getIndexBannerlist, getIndexCategoryList, getShopList_dianzan, getShopList_collect } = require('../db/index');
 
 
 // index界面的，路由处理
@@ -29,12 +29,12 @@ router.get('/category', async (req, res, next) => {
 // 两个参数，第一个是category类目，
 //第二个是位移,默认为0，用于sql语句中的offset参数
 router.get('/shop', async (req, res, next) => {
-    let categoryID = req.query.categoryID;
-    let offset = req.query.offset;
-    let openID = req.query.openID;
+    let {
+        categoryID, offset, openID
+    } = req.query;
     try {
         const shopList_dianzan = await getShopList_dianzan(categoryID, offset, openID);
-        const shopList_collect = await getShopList_collect(shopList_dianzan, openID)
+        const shopList_collect = await getShopList_collect(shopList_dianzan, openID);
         res.json(shopList_collect);
     } catch (err) {
         next(err);
@@ -44,7 +44,6 @@ router.get('/shop', async (req, res, next) => {
 // index界面
 router.get('/index/tag', async (req, res, next) => {
     let shopID = req.query.shopID;
-    console.log(shopID);
     try {
         const tagData = await getTag(shopID);
         res.json(tagData);

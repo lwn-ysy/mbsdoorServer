@@ -1,7 +1,7 @@
 // 数据库处理
 
 const mysql = require('mysql');
-const { MYSQL_CONFIG } = require('../config');
+const { MYSQL_CONFIG } = require('./config/config');
 
 
 // 创建链接mysql

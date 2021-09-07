@@ -1,13 +1,12 @@
 const express = require('express')
 const router = express.Router();
-const { getPersonalShopList, changeCollect, getZan, changeZan, deleteAllCollect } = require('../../db/personal/personal');
+const { getPersonalShopList, changeCollect, getZan, changeZan, deleteAllCollect } = require('../db/personal');
 
 //  personal界面的，路由处理
 
 // 获取收藏和历史的所有数据,包括shop_id数据
 router.get('/collectlist', async (req, res, next) => {
-    let openID = req.query.openID;
-    let table = req.query.table;// table = collect or history
+    let { openID, table } = req.query;// table = collect or history
     try {
         let collectShopListdata = await getPersonalShopList(openID, table);
         res.json(collectShopListdata);
@@ -18,17 +17,14 @@ router.get('/collectlist', async (req, res, next) => {
 
 // 修改,有则删除，无责增加
 router.post('/collect', async (req, res, next) => {
-    let openID = req.body.openID;
-    let shopID = req.body.shopID;
-    let table = 'collect';
+    let { openID, shopID, table = 'collect' } = req.body
     await changeCollect(openID, shopID, table);
     res.json();
 })
 // 删除所有收藏or历史
 router.delete('/collect', async (req, res, next) => {
+    let { openID, table = 'collect' } = req.body;
     try {
-        let openID = req.body.openID;
-        let table = 'collect';
         await deleteAllCollect(openID, table);
         res.json('删除成功');
 
@@ -51,8 +47,9 @@ router.get('/dianzan', async (req, res, next) => {
 
 // 点赞的增删路由
 router.post('/dianzan', async (req, res, next) => {
-    let openID = req.body.openID;
-    let shopID = req.body.shopID;
+    let {
+        openID, shopID
+    } = req.body;
 
     await changeZan(openID, shopID);
 

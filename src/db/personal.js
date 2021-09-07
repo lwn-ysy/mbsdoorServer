@@ -1,7 +1,7 @@
 // personal界面的，数据库处理
 
 const mysql = require('mysql');
-const { MYSQL_CONFIG } = require('../config')
+const { MYSQL_CONFIG } = require('./config/config')
 
 // 创建链接mysql
 const connection = mysql.createConnection(MYSQL_CONFIG);

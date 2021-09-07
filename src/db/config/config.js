@@ -4,7 +4,7 @@ MYSQL_CONFIG = {
     password: '3434902qwe',
     port: 3306,
     database: 'mbsdoor',
-    useConnectionPooling: true // 连接外部服务器
+    useConnectionPooling: true // 连接池，连接外部服务器
 }
 module.exports = {
     MYSQL_CONFIG
