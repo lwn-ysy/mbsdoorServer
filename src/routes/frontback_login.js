@@ -11,9 +11,9 @@ router.post('/login', async (req, res, next) => {
     try {
         let userData = await dbValidateUserLogin(username, password);
         if (userData.isValidate) {
-            res.json(userData.token);
+            res.json({ code: 20000, data: { token: userData.token } });
         } else {
-            res.status(800).json({ message: '账号或者密码错误' });
+            res.json({ code: 50012, message: '账号或者密码错误' });
         }
 
     } catch (error) {
@@ -25,17 +25,21 @@ router.post('/login', async (req, res, next) => {
 router.get('/info', async (req, res, next) => {
     let { token } = req.query;
     try {
-        let { isValidate, result, message } = await dbGetUserInfo(token);
+        let { isValidate, result } = await dbGetUserInfo(token);
         if (isValidate) {
-            res.json(result);
+            res.json({ code: 20000, data: result });
         } else {
-            res.status(801).json(message);
+            res.json({ code: 50008, message: 'token无效' });
         }
     } catch (error) {
         next(error);
     }
 })
 
+
+router.post('/logout', (req, res, next) => {
+    res.json({ code: 20000, data: 'success' })
+})
 
 
 module.exports = router;

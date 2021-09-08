@@ -10,6 +10,7 @@ const index = require('./src/routes/index');
 const login = require('./src/routes/login');
 const showpic = require('./src/routes/showpic');
 const frontback_login = require('./src/routes/frontback_login');
+const frontback_account = require('./src/routes/frontback_account');
 
 const PORT = 5000;
 
@@ -27,8 +28,10 @@ const PORT = 5000;
 // 设置跨域允许
 app.all('*', function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    res.header("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+    // res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    // 设置允许的请求头
+    res.header("Access-Control-Allow-Headers", " Origin, X-Requested-With, Content-Type, Accept,X-Token");
+    res.header("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE,OPTIONS");
     res.header("X-Powered-By", ' 3.2.1')
     next();
 });
@@ -47,9 +50,10 @@ app.use('/personal', personal);
 app.use('/index', index);
 app.use('/login', login);
 app.use('/showpic', showpic);
-app.use('/vue-admin-template/user', frontback_login);
 
 // 后台系统管理vue项目
+app.use('/vue-admin-template/user', frontback_login);
+app.use('/vue-admin-template/account', frontback_account);
 
 
 // 500界面
