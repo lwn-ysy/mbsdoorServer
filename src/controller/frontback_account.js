@@ -49,8 +49,10 @@ function dbUpdateAccount(data) {
   return new Promise(async (resolve, reject) => {
     try {
       await updadteAccount(data);
-      if (data.roles) {// 有则updateRole，无则跳过
-        let PromiseArry = data.roles.map(role => updateRole(data.userID, role));
+      console.log(data.roles)
+      if (data.roles && data.userID) {// 有则updateRole，无则跳过
+        await deleteRole(data.userID)// 暴力解法，先删除所有roles，再增加;后期可以以哪些是新增、哪些是去除的来优化
+        let PromiseArry = data.roles.map(role => addRole(data.userID, role));
         await Promise.all(PromiseArry);
       }
       resolve(true);

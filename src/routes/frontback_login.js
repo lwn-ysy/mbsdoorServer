@@ -3,19 +3,18 @@ const router = express.Router();
 const { dbGetUserInfo, dbValidateUserLogin } = require('../controller/frontback_login');
 
 // 登录，返回token
-// 接收 username和password 数据
+// 接收 account和password 数据
 // 目前以用户id为token
 router.post('/login', async (req, res, next) => {
-    let { username, password } = req.body;
+    let { account, password } = req.body;
     // 验证账号密码是否正确
     try {
-        let userData = await dbValidateUserLogin(username, password);
+        let userData = await dbValidateUserLogin(account, password);
         if (userData.isValidate) {
             res.json({ code: 20000, data: { token: userData.token } });
         } else {
             res.json({ code: 50012, message: '账号或者密码错误' });
         }
-
     } catch (error) {
         next(error);
     }

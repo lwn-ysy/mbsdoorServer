@@ -6,10 +6,10 @@ const { validateUserLogin, getUserInfo, getUserRoles, validateToken } = require(
 
 // /vue-admin-template/user/login
 //验证用户登录
-function dbValidateUserLogin(username, password) {
+function dbValidateUserLogin(account, password) {
   return new Promise(async (resolve, reject) => {
     try {
-      let isValidate = await validateUserLogin(username, password);
+      let isValidate = await validateUserLogin(account, password);
       if (isValidate.length === 1) {
         // 用户验证通过
         resolve({ isValidate: true, token: isValidate[0]['userID'] });

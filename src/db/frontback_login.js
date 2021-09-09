@@ -13,8 +13,8 @@ const connection = mysql.createConnection(MYSQL_CONFIG);
 connection.connect()
 
 // 查询user_info表的账号密码-->验证用户登录
-function validateUserLogin(username, password) {
-    let sql = `select * from mbsdoor.user_info where username="${username}" and password="${password}"`;
+function validateUserLogin(account, password) {
+    let sql = `select * from mbsdoor.user_info where account="${account}" and password="${password}"`;
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err || !result) {

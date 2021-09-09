@@ -32,8 +32,12 @@ app.all('*', function (req, res, next) {
     // 设置允许的请求头
     res.header("Access-Control-Allow-Headers", " Origin, X-Requested-With, Content-Type, Accept,X-Token");
     res.header("Access-Control-Allow-Methods", "POST,GET,PUT,DELETE,OPTIONS");
-    res.header("X-Powered-By", ' 3.2.1')
-    next();
+    res.header("X-Powered-By", ' 3.2.1');
+    if (req.method == 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
 });
 
 // 静态文件路由
@@ -58,7 +62,7 @@ app.use('/vue-admin-template/account', frontback_account);
 
 // 500界面
 app.use((err, req, res, next) => {
-    res.status(500).send({ error: err.message });
+    res.status(500).send({ error: err });
 });
 
 
