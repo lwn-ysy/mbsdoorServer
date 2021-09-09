@@ -1,6 +1,6 @@
 // 数据处理功能模块
 
-const { validateUserLogin, getUserInfo, getUserRoles, validateToken } = require('../db/frontback_login');
+const { validateUserLogin, getUserInfo, getRoles, validateToken } = require('../db/frontback_login');
 
 
 
@@ -33,8 +33,8 @@ function dbGetUserInfo(token) {
       let isValidate = await validateToken(token);
       if (isValidate) {
         let [infoResult] = await getUserInfo(token);
-        let permissionResult = await getUserRoles(infoResult.userID);
-        infoResult.roles = permissionResult.map(item => item.role);
+        let [{ roles }] = await getRoles(infoResult.userID);
+        infoResult.roles = roles.split(',');
         resolve({ isValidate: true, result: infoResult });
       } else {
         resolve({ isValidate: false, message: "token无效" });

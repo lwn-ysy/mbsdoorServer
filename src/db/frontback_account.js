@@ -14,7 +14,7 @@ connection.connect()
 // 需要操作两个表role和account
 // get role
 function getRole(userID) {
-  let sql = `select * from mbsdoor.user_permission where userID='${userID}'`;
+  let sql = `select * from mbsdoor.role where userID='${userID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
@@ -29,7 +29,7 @@ function getRole(userID) {
 
 // get Account
 function getAccount() {
-  let sql = `select * from mbsdoor.user_info limit 20`;
+  let sql = `select * from mbsdoor.user limit 20`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
@@ -46,27 +46,27 @@ function getAccount() {
 
 // delete role
 function deleteRole(userID) {
-  let sql = `delete from mbsdoor.user_permission where userID='${userID}'`;
+  let sql = `delete from mbsdoor.user_role where userID='${userID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
 // delete Account
 function deleteAccount(userID) {
-  let sql = `delete from mbsdoor.user_info where userID='${userID}'`;
+  let sql = `delete from mbsdoor.user where userID='${userID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
@@ -75,28 +75,28 @@ function deleteAccount(userID) {
 
 // 增加权限role
 function addRole(userID, role) {
-  let sql = `insert into mbsdoor.user_permission (userID,role) value ('${userID}','${role}')`;
+  let sql = `insert into mbsdoor.user_role (userID,role) value ('${userID}','${role}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
 // post增加Account
 function addAccount(data) {
   let { userID, account, password, nickname, introduction } = data;
-  let sql = `insert into mbsdoor.user_info (userID,account,password,nickname,introduction) value ('${userID}','${account}','${password}','${nickname}','${introduction}')`;
+  let sql = `insert into mbsdoor.user (userID,account,password,nickname,introduction) value ('${userID}','${account}','${password}','${nickname}','${introduction}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
@@ -105,28 +105,28 @@ function addAccount(data) {
 
 // 更新role
 function updateRole(userID, role) {
-  let sql = `update mbsdoor.user_permission set role='${role}' where userID='${userID}'`;
+  let sql = `update mbsdoor.user_role set role='${role}' where userID='${userID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
 // put修改Account
 function updadteAccount(data) {
   let { userID, password, nickname, introduction } = data;
-  let sql = `update mbsdoor.user_info set password='${password}',nickname='${nickname}',introduction='${introduction}' where userID='${userID}'`;
+  let sql = `update mbsdoor.user set password='${password}',nickname='${nickname}',introduction='${introduction}' where userID='${userID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
         reject(err);
         return;
       }
-      resolve(true);
+      resolve();
     })
   })
 }
