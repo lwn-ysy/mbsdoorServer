@@ -11,6 +11,7 @@ const login = require('./src/routes/login');
 const showpic = require('./src/routes/showpic');
 const frontback_login = require('./src/routes/frontback_login');
 const frontback_account = require('./src/routes/frontback_account');
+const frontback_role = require('./src/routes/frontback_role');
 
 const PORT = 5000;
 
@@ -58,6 +59,7 @@ app.use('/showpic', showpic);
 // 后台系统管理vue项目
 app.use('/vue-admin-template/user', frontback_login);
 app.use('/vue-admin-template/account', frontback_account);
+app.use('/vue-admin-template/role', frontback_role);
 
 
 // 500界面

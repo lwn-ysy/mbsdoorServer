@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router();
 const https = require('https');
 
-//  personal界面的，向微信小程序发送请求
+//  personal界面的，向微信小程序发送请求,获取用户openID
 
 router.get('/', (req, res, next) => {
     let code = req.query.code;

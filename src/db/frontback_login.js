@@ -62,7 +62,7 @@ function getUserInfo(userID) {
 
 // 查询user_permission表的用户权限role
 function getRoles(userID) {
-    let sql = `select user_role.userID,group_concat(role.role) as roles from user_role left join role on user_role.roleID=role.roleID where user_role.userID='${userID}' group by user_role.userID;
+    let sql = `select user_role.userID,group_concat(role.rolename) as roles from user_role left join role on user_role.roleID=role.roleID where user_role.userID='${userID}' group by user_role.userID;
     `;
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
