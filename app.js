@@ -12,6 +12,7 @@ const showpic = require('./src/routes/showpic');
 const frontback_login = require('./src/routes/frontback_login');
 const frontback_account = require('./src/routes/frontback_account');
 const frontback_role = require('./src/routes/frontback_role');
+const frontback_banner = require('./src/routes/frontback_banner');
 
 const PORT = 5000;
 
@@ -60,6 +61,7 @@ app.use('/showpic', showpic);
 app.use('/vue-admin-template/user', frontback_login);
 app.use('/vue-admin-template/account', frontback_account);
 app.use('/vue-admin-template/role', frontback_role);
+app.use('/vue-admin-template/activity', frontback_banner);
 
 
 // 500界面
