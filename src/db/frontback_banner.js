@@ -63,9 +63,11 @@ function updateBanner(data) {
 
 
 
-// addrole，
-function addBanner(userID, roleID) {
-  let sql = `insert into mbsdoor.user_role (userID,roleID) value ('${userID}','${roleID}')`;
+// add，
+function addBanner(data) {
+  let { type, description, picURL, hidden } = data;
+  hidden = hidden === false ? 0 : 1;
+  let sql = `insert into mbsdoor.banner (type,description,picURL,hidden) value ('${type}','${description}','${picURL}',${hidden})`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {

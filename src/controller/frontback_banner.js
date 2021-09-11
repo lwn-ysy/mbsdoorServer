@@ -1,6 +1,6 @@
 // banner 模块
 
-const { getBanner, deleteBanner, updateBanner } = require('../db/frontback_banner');
+const { getBanner, deleteBanner, updateBanner, addBanner } = require('../db/frontback_banner');
 
 //get
 function dbGetBanner() {
@@ -19,7 +19,16 @@ function dbGetBanner() {
 }
 
 
-
+function dbAddBanner(data) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await addBanner(data);
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  })
+}
 
 // update
 // 这里取个巧，先删除所有的，再增加新的
@@ -50,5 +59,5 @@ function dbDeleteBanner(bannerID) {
 
 
 module.exports = {
-  dbGetBanner, dbDeleteBanner, dbUpdateBanner
+  dbGetBanner, dbDeleteBanner, dbUpdateBanner, dbAddBanner
 }

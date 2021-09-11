@@ -18,14 +18,11 @@ const PORT = 5000;
 
 
 //上线环境
-
-
-//上线环境
-// const option = {
-//     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
-//     passphrase: '3434902qwe'
-// };
-// const httpsServer = https.createServer(option, app);
+const option = {
+    pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
+    passphrase: '3434902qwe'
+};
+const httpsServer = https.createServer(option, app);
 
 // 设置跨域允许
 app.all('*', function (req, res, next) {
@@ -63,7 +60,6 @@ app.use('/vue-admin-template/account', frontback_account);
 app.use('/vue-admin-template/role', frontback_role);
 app.use('/vue-admin-template/activity', frontback_banner);
 
-
 // 500界面
 app.use((err, req, res, next) => {
     res.status(500).send({ error: err });
@@ -71,11 +67,11 @@ app.use((err, req, res, next) => {
 
 
 // //上线环境
-// httpsServer.listen(PORT, () => {
-//     console.log("server running at port ", PORT)
-// })
-
-// dev环境
-app.listen(PORT, () => {
+httpsServer.listen(PORT, () => {
     console.log("server running at port ", PORT)
 })
+
+// dev环境
+// app.listen(PORT, () => {
+//     console.log("server running at port ", PORT)
+// })
