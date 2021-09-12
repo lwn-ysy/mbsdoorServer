@@ -67,7 +67,7 @@ function updateBanner(data) {
 function addBanner(data) {
   let { type, description, picURL, hidden } = data;
   hidden = hidden === false ? 0 : 1;
-  let sql = `insert into mbsdoor.banner (type,description,picURL,hidden) value ('${type}','${description}','${picURL}',${hidden})`;
+  let sql = `insert into mbsdoor.banner (type,description,picURL,hidden) values ('${type}','${description}','${picURL}',${hidden})`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {

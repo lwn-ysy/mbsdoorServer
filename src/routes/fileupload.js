@@ -1,26 +1,37 @@
 const express = require('express');
-const path = require('path')
 const router = express.Router();
-
-// form包括图片解析库
-const formidable = require('formidable')
-
+const { dbAddBanner } = require('../controller/frontback_banner');
+// 引入formidable库
+const formidable = require('formidable');
 router.post('/', (req, res, next) => {
-  let form = new formidable({
-    keepExtensions: true,
-    uploadDir: './static/image/banner/',
-    multiples: true
-  });
+  try {
+    // 配置
+    let form = new formidable({
+      keepExtensions: true,
+      uploadDir: './static/image/banner/',
+      multiples: true
+    });
 
 
-  form.parse(req, (err, fields, files) => {
-    if (err) {
-      next(err);
-    }
-    const PATH = "https://mbsdoor.com:5000/static/image/banner/";
-    let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
-    res.json({ code: 20000, data: "上传成功" })
-  })
+    // 解析
+    form.parse(req, async (err, fields, files) => {
+      if (err) {
+        next(err);
+      }
+      const PATH = "https://mbsdoor.com:5000/static/image/banner/";
+      let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
+      fields.picURL = picURL;
+
+      // 数据库处理
+      await dbAddBanner(fields)
+
+      //返回数据给前端
+      res.json({ code: 20000, data: "上传成功" })
+    })
+  } catch (error) {
+    next(error)
+  }
+
 })
 
 
