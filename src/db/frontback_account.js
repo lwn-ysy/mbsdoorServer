@@ -75,7 +75,7 @@ function deleteAccount(userID) {
 
 // 增加权限role
 function addRole(userID, role) {
-  let sql = `insert into mbsdoor.user_role (userID,role) value ('${userID}','${role}')`;
+  let sql = `insert into mbsdoor.user_role (userID,role) values ('${userID}','${role}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
@@ -89,7 +89,7 @@ function addRole(userID, role) {
 // post增加Account
 function addAccount(data) {
   let { userID, account, password, nickname, introduction } = data;
-  let sql = `insert into mbsdoor.user (userID,account,password,nickname,introduction) value ('${userID}','${account}','${password}','${nickname}','${introduction}')`;
+  let sql = `insert into mbsdoor.user (userID,account,password,nickname,introduction) values ('${userID}','${account}','${password}','${nickname}','${introduction}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {

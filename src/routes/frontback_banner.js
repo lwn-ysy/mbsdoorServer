@@ -53,7 +53,7 @@ router.post('/banner', (req, res, next) => {
       const PATH = "https://mbsdoor.com:5000/static/image/banner/";
       let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
       fields.picURL = picURL;
-      await dbAddBanner(fields)
+      await dbAddBanner(fields).catch(errPromise => next(errPromise))
       res.json({ code: 20000, data: "上传成功" })
     })
   } catch (error) {

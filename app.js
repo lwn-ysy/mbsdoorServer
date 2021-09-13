@@ -14,6 +14,7 @@ const frontback_account = require('./src/routes/frontback_account');
 const frontback_role = require('./src/routes/frontback_role');
 const frontback_banner = require('./src/routes/frontback_banner');
 const frontback_shop = require('./src/routes/frontback_shop');
+const frontback_tag = require('./src/routes/frontback_tag');
 
 const PORT = 5000;
 
@@ -61,6 +62,7 @@ app.use('/vue-admin-template/account', frontback_account);
 app.use('/vue-admin-template/role', frontback_role);
 app.use('/vue-admin-template/activity', frontback_banner);
 app.use('/vue-admin-template/shop', frontback_shop);
+app.use('/vue-admin-template/shop', frontback_tag);
 
 // 500界面
 app.use((err, req, res, next) => {

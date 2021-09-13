@@ -12,6 +12,10 @@ const connection = mysql.createConnection(MYSQL_CONFIG);
 // 开始连接
 connection.connect()
 
+
+
+
+
 // get 
 function getShop() {
   let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID limit 20;`
@@ -30,8 +34,23 @@ function getShop() {
   })
 }
 
+// delete shop_tag
+// 删除shop_tag映射表的shopID对应的tagID
+function deleteShopTag(shopID) {
+  let sql = `delete from mbsdoor.shop_tag where shopID='${shopID}'`;
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    })
+  })
+}
 
 
+// delete shop
 // TODO：若数据库中没有此shopID，也会提示删除成功，
 // 所以是否需要先查询，是否存在？
 function deleteShop(shopID) {
@@ -46,6 +65,7 @@ function deleteShop(shopID) {
     })
   })
 }
+
 
 
 // update 
@@ -90,4 +110,4 @@ function addShop(data) {
 
 
 
-module.exports = { getShop, deleteShop, updateShop, addShop };
+module.exports = { getShop, deleteShop, updateShop, addShop, deleteShopTag };

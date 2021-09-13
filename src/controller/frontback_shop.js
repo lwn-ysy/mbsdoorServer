@@ -1,6 +1,6 @@
 // shop基本信息 模块
 
-const { getShop, deleteShop, updateShop, addShop } = require('../db/frontback_shop');
+const { getShop, deleteShop, updateShop, addShop, deleteShopTag } = require('../db/frontback_shop');
 
 //get
 function dbGetShop() {
@@ -38,8 +38,8 @@ function dbUpdateShop(data) {
     try {
       await updateShop(data);
       resolve();
-    } catch (error) {
-      reject(error);
+    } catch (err) {
+      reject(err);
     }
   })
 }
@@ -49,7 +49,9 @@ function dbUpdateShop(data) {
 function dbDeleteShop(shopID) {
   return new Promise(async (resolve, reject) => {
     try {
+      // 串行的，先删除shop表，再删shoptag表
       await deleteShop(shopID);
+      await deleteShopTag(shopID);
       resolve();
     } catch (error) {
       reject(error);
