@@ -43,14 +43,14 @@ router.post('/banner', (req, res, next) => {
   try {
     let form = new formidable({
       keepExtensions: true,
-      uploadDir: './static/image/banner/',
+      uploadDir: './static/image/coverimage/',
       multiples: true
     });
     form.parse(req, async (err, fields, files) => {
       if (err) {
         next(err);
       }
-      const PATH = "https://mbsdoor.com:5000/static/image/banner/";
+      const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
       let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
       fields.picURL = picURL;
       await dbAddBanner(fields).catch(errPromise => next(errPromise))

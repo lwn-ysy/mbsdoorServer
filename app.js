@@ -15,16 +15,17 @@ const frontback_role = require('./src/routes/frontback_role');
 const frontback_banner = require('./src/routes/frontback_banner');
 const frontback_shop = require('./src/routes/frontback_shop');
 const frontback_tag = require('./src/routes/frontback_tag');
+const frontback_category = require('./src/routes/frontback_category');
 
 const PORT = 5000;
 
 
 //上线环境
-// const option = {
-//     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
-//     passphrase: '3434902qwe'
-// };
-// const httpsServer = https.createServer(option, app);
+const option = {
+    pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
+    passphrase: '3434902qwe'
+};
+const httpsServer = https.createServer(option, app);
 
 // 设置跨域允许
 app.all('*', function (req, res, next) {
@@ -63,6 +64,7 @@ app.use('/vue-admin-template/role', frontback_role);
 app.use('/vue-admin-template/activity', frontback_banner);
 app.use('/vue-admin-template/shop', frontback_shop);
 app.use('/vue-admin-template/shop', frontback_tag);
+app.use('/vue-admin-template/shop', frontback_category);
 
 // 500界面
 app.use((err, req, res, next) => {
@@ -71,11 +73,11 @@ app.use((err, req, res, next) => {
 
 
 // //上线环境
-// httpsServer.listen(PORT, () => {
-//     console.log("server running at port ", PORT)
-// })
-
-// dev环境
-app.listen(PORT, () => {
+httpsServer.listen(PORT, () => {
     console.log("server running at port ", PORT)
 })
+
+// dev环境
+// app.listen(PORT, () => {
+//     console.log("server running at port ", PORT)
+// })

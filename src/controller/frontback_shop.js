@@ -1,6 +1,6 @@
 // shop基本信息 模块
-
-const { getShop, deleteShop, updateShop, addShop, deleteShopTag } = require('../db/frontback_shop');
+const { nanoid } = require('nanoid');
+const { getShop, deleteShop, updateShop, addShop, deleteShopTag, addShopTag } = require('../db/frontback_shop');
 
 //get
 function dbGetShop() {
@@ -10,6 +10,9 @@ function dbGetShop() {
       result = result.map(item => {
         if (item.tagname) {
           item.tagname = item.tagname.split(',');
+        }
+        if (item.tagID) {
+          item.tagID = item.tagID.split(',').map(i => parseInt(i));
         }
         return item;
       })
@@ -24,7 +27,13 @@ function dbGetShop() {
 function dbAddShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
+      console.log("controller:",data)
+      let { tagID } = data;
+      let shopID = nanoid(11);
+      data = { shopID: shopID, ...data }
       await addShop(data);
+      let promiseAll = tagID.map(item => addShopTag(shopID, item));
+      await Promise.all(promiseAll);
       resolve();
     } catch (error) {
       reject(error);
@@ -36,7 +45,11 @@ function dbAddShop(data) {
 function dbUpdateShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
+      let { tagID, shopID } = data;
       await updateShop(data);
+      await deleteShopTag(shopID);
+      let promiseAll = tagID.map(item => addShopTag(shopID, item));
+      await Promise.all(promiseAll);
       resolve();
     } catch (err) {
       reject(err);

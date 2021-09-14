@@ -3,7 +3,6 @@
 
 const mysql = require('mysql');
 const { MYSQL_CONFIG } = require('./config/config');
-const { nanoid } = require('nanoid');
 
 
 // 创建链接mysql
@@ -15,24 +14,6 @@ connection.connect()
 
 
 
-
-// get 
-function getShop() {
-  let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID limit 20;`
-  return new Promise((resolve, reject) => {
-    connection.query(sql, (err, result) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      if (!result) {
-        reject(new Error('连接数据失败'));
-        return;
-      }
-      resolve(result);
-    })
-  })
-}
 
 // delete shop_tag
 // 删除shop_tag映射表的shopID对应的tagID
@@ -48,6 +29,43 @@ function deleteShopTag(shopID) {
     })
   })
 }
+
+// add shop_tag
+// 添加shop_tag映射表的shopID对应的tagID
+function addShopTag(shopID, tagID) {
+  let sql = `insert into mbsdoor.shop_tag (shopID,tagID) values ('${shopID}',${tagID})`;
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve();
+    })
+  })
+}
+
+
+
+// get 
+function getShop() {
+  let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID limit 20;`
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      if (!result) {
+        reject(new Error('连接数据失败'));
+        return;
+      }
+      resolve(result);
+    })
+  })
+}
+
+
 
 
 // delete shop
@@ -89,10 +107,12 @@ function updateShop(data) {
 
 
 
+
+
+
 // add，
 function addShop(data) {
-  let { categoryID, des, coverPicUrl, title } = data;
-  let shopID = nanoid(11);
+  let { shopID, categoryID, des, coverPicUrl, title } = data;
   let sql = `insert into mbsdoor.shop (shopID,categoryID,des,coverPicUrl,title) values ('${shopID}','${categoryID}','${des}','${coverPicUrl}','${title}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
@@ -110,4 +130,4 @@ function addShop(data) {
 
 
 
-module.exports = { getShop, deleteShop, updateShop, addShop, deleteShopTag };
+module.exports = { getShop, deleteShop, updateShop, addShop, deleteShopTag, addShopTag };
