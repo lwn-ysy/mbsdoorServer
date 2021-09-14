@@ -27,10 +27,10 @@ function dbGetShop() {
 function dbAddShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log("controller:",data)
       let { tagID } = data;
       let shopID = nanoid(11);
-      data = { shopID: shopID, ...data }
+      let createdate = Date.now();// 13位数timestamp
+      data = { shopID: shopID, createdate: createdate, ...data }
       await addShop(data);
       let promiseAll = tagID.map(item => addShopTag(shopID, item));
       await Promise.all(promiseAll);

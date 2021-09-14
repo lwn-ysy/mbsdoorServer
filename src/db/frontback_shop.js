@@ -49,7 +49,7 @@ function addShopTag(shopID, tagID) {
 
 // get 
 function getShop() {
-  let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID limit 20;`
+  let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID order by shop.createdate DESC limit 20;`
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -112,8 +112,8 @@ function updateShop(data) {
 
 // add，
 function addShop(data) {
-  let { shopID, categoryID, des, coverPicUrl, title } = data;
-  let sql = `insert into mbsdoor.shop (shopID,categoryID,des,coverPicUrl,title) values ('${shopID}','${categoryID}','${des}','${coverPicUrl}','${title}')`;
+  let { shopID, categoryID, des, coverPicUrl, title, createdate } = data;
+  let sql = `insert into mbsdoor.shop (shopID,categoryID,des,coverPicUrl,title,createdate) values ('${shopID}','${categoryID}','${des}','${coverPicUrl}','${title}'),${createdate})`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
