@@ -1,4 +1,3 @@
-const { json } = require('body-parser');
 const express = require('express');
 const router = express.Router();
 // form包括图片解析库
@@ -8,7 +7,8 @@ const { dbGetShop, dbDeleteShop, dbUpdateShop, dbAddShop } = require('../control
 // 获取
 router.get('/page', async (req, res, next) => {
   try {
-    let result = await dbGetShop();
+    let { shopID } = req.query;
+    let result = await dbGetShop(shopID);
     res.json({ code: 20000, data: result })
   } catch (error) {
     next(error);
@@ -54,7 +54,8 @@ router.put('/page', async (req, res, next) => {
       if (!files.file) {
         next(new Error("图片上传失败，图片数据字段应是file"));
       }
-      const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
+      // const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
+      const PATH = "http://localhost:5000/static/image/coverimage/";
       fields.coverPicUrl = PATH + files.file.path.split('\\').slice(-1)[0];
       // 前端传来的tagID本来是数组，到这里变成字符串了
       fields.tagID = fields.tagID.split(',').map(i => parseInt(i))
@@ -68,7 +69,6 @@ router.put('/page', async (req, res, next) => {
 
   })
 })
-
 // 增加
 router.post('/page', (req, res, next) => {
   try {
@@ -77,24 +77,26 @@ router.post('/page', (req, res, next) => {
       uploadDir: './static/image/coverimage/',
       multiples: true
     });
-    form.parse(req, async (err, fields, files) => {// files.file字段是由前端传送过来的
+    form.parse(req, (err, fields, files) => {// files.file字段是由前端传送过来的
       if (err) {
         next(err);
       }
       if (!files.file) {
         next(new Error("图片上传失败，图片数据字段应是file"));
       }
-      const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
+      // const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
+      const PATH = "http://localhost:5000/static/image/coverimage/";
       fields.coverPicUrl = PATH + files.file.path.split('\\').slice(-1)[0];
-      fields.tagID = fields.tagID.split(',').map(i => parseInt(i))
-      await dbAddShop(fields).catch(errPromise => next(errPromise))
-      res.json({ code: 20000, data: "增加成功" })
+      fields.tagID = fields.tagID.split(',').map(i => parseInt(i));
+      fields.galaryImageUrls = fields.galaryImageUrls.split(',');
+      dbAddShop(fields).then(() => res.json({ code: 20000, data: "增加成功" })).catch(errPromise => next(errPromise));
     })
   } catch (error) {
     next(error)
   }
 
 })
+
 
 
 

@@ -15,41 +15,30 @@ connection.connect()
 
 
 
-// delete shop_tag
-// 删除shop_tag映射表的shopID对应的tagID
-function deleteShopTag(shopID) {
-  let sql = `delete from mbsdoor.shop_tag where shopID='${shopID}'`;
-  return new Promise((resolve, reject) => {
-    connection.query(sql, (err, result) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    })
-  })
-}
-
-// add shop_tag
-// 添加shop_tag映射表的shopID对应的tagID
-function addShopTag(shopID, tagID) {
-  let sql = `insert into mbsdoor.shop_tag (shopID,tagID) values ('${shopID}',${tagID})`;
-  return new Promise((resolve, reject) => {
-    connection.query(sql, (err, result) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      resolve();
-    })
-  })
-}
-
-
-
 // get 
-function getShop() {
-  let sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.isFull,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID FROM shop left join category on shop.categoryID=category.categoryID left join shop_tag on shop.shopID=shop_tag.shopID left join tag on shop_tag.tagID=tag.tagID group by shop.shopID order by shop.createdate DESC limit 20;`
+function getShop(shopID) {
+  let sql = undefined;
+  if (shopID) {
+    // 查询单个
+    sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID,group_concat(galary.imageurl) as imageurl FROM shop
+    left join category on shop.categoryID=category.categoryID 
+    left join shop_tag on shop.shopID=shop_tag.shopID 
+    left join tag on shop_tag.tagID=tag.tagID 
+    left join galary on shop.shopID=galary.shopID
+    where shop.shopID='${shopID}' 
+    group by shop.shopID 
+    order by shop.createdate DESC ;`
+  } else {
+    // 查询所有，限制20个
+    sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID,group_concat(galary.imageurl) as imageurl FROM shop 
+    left join category on shop.categoryID=category.categoryID 
+    left join shop_tag on shop.shopID=shop_tag.shopID 
+    left join tag on shop_tag.tagID=tag.tagID 
+    left join galary on shop.shopID=galary.shopID
+    group by shop.shopID 
+    order by shop.createdate DESC 
+    limit 20;`
+  }
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err) {
@@ -113,7 +102,7 @@ function updateShop(data) {
 // add，
 function addShop(data) {
   let { shopID, categoryID, des, coverPicUrl, title, createdate } = data;
-  let sql = `insert into mbsdoor.shop (shopID,categoryID,des,coverPicUrl,title,createdate) values ('${shopID}','${categoryID}','${des}','${coverPicUrl}','${title}'),${createdate})`;
+  let sql = `insert into mbsdoor.shop (shopID,categoryID,des,coverPicUrl,title,createdate) values ('${shopID}','${categoryID}','${des}','${coverPicUrl}','${title}','${createdate}')`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
@@ -130,4 +119,4 @@ function addShop(data) {
 
 
 
-module.exports = { getShop, deleteShop, updateShop, addShop, deleteShopTag, addShopTag };
+module.exports = { getShop, deleteShop, updateShop, addShop };

@@ -2,7 +2,11 @@
 
 ##### 基于 nodejs + express框架 + mysql数据库  
 
+其它系列：
 
+[微信小程序](https://github.com/lwn-ysy/mbsDoor)
+
+[后台管理系统](https://github.com/lwn-ysy/mbsdoor-frontBack)
 
 ##### 1.通过服务端设置**Access-Control-Allow-Origin**，解决跨域问题。TODO:**带cookie跨域请求**
 
