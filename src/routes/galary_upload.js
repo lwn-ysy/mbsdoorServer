@@ -24,8 +24,9 @@ router.post('/galary', (req, res, next) => {
       if (!files.file) {
         next(new Error("图片上传失败，图片数据字段应是file"));
       }
-      // const PATH = "https://mbsdoor.com:5000/static/image/shop/";
-      const host = "http://localhost:5000/";
+      // const host = "http://localhost:5000/";
+      const host = "https://mbsdoor.com:5000/";
+
       // 本地路径，用于删除
       // let localPath = files.file.path  static\image\shop\upload_1555f167ad51039a5357ed7dc2d1ee67.png;
       // 服务器地址，用于读取/存到数据库
@@ -38,7 +39,8 @@ router.post('/galary', (req, res, next) => {
 })
 // 图片集合的api,前端传送json格式数据
 router.delete('/galary', (req, res, next) => {
-  const host = "http://localhost:5000/";
+  // const host = "http://localhost:5000/";
+  const host = "https://mbsdoor.com:5000/";
   let { servePath } = req.query;
   let localPath = servePath.replace(host, '')
   // TODO: unlink的查询地址是相对项目地址C:\Users\63195\Desktop\mbsServer> + path（这里是localPath） 查询的

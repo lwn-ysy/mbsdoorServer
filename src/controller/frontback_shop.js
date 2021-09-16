@@ -2,7 +2,7 @@
 const { nanoid } = require('nanoid');
 const { getShop, deleteShop, updateShop, addShop } = require('../db/frontback_shop');
 const { deleteShopTag, addShopTag } = require('../db/frontback_shop_tag');
-const { getGalary, addGalary, updateGalary, deleteGalary } = require('../db/galary');
+const { dbDeleteGalary, dbAddGalary } = require('../controller/galary')
 
 //get
 function dbGetShop(shopID) {
@@ -34,19 +34,20 @@ function dbGetShop(shopID) {
   })
 }
 
-
+// add
 function dbAddShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
-      let { tagID, galaryImageUrls } = data;
+      let { tagID, imageurl } = data;
       let shopID = nanoid(11);
+      data.shopID = shopID;
       let createdate = Date.now();// 13位数timestamp
-      data = { shopID: shopID, createdate: createdate, ...data }
+      data = { createdate: createdate, ...data }
       await addShop(data);
       // 数据库的shop_tag表，添加标签数据
-      let tagPromiseAll = tagID.map(item => addShopTag(shopID, item));
+      let tagPromiseAll = tagID.map(_tagID => addShopTag(shopID, _tagID));
       // 数据库的galary表，添加数据
-      let galaryPromiseAll = galaryImageUrls.map(item => addGalary(shopID, item));
+      let galaryPromiseAll = imageurl.map(_imageurl => dbAddGalary(shopID, _imageurl));
       await Promise.all([...tagPromiseAll, ...galaryPromiseAll]);
       resolve();
     } catch (error) {
@@ -56,14 +57,23 @@ function dbAddShop(data) {
 }
 
 // update
+// shop_tag,galary，都是先删除所有然后添加，如果数据量大的话即要删除的东西很多，影响性能
+// 投机取巧，待优化
 function dbUpdateShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
-      let { tagID, shopID } = data;
+      let { tagID, shopID, imageurl } = data;
       await updateShop(data);
+
+      // 数据库的shop_tag表，添加标签数据
       await deleteShopTag(shopID);
-      let promiseAll = tagID.map(item => addShopTag(shopID, item));
-      await Promise.all(promiseAll);
+      let promiseAll = tagID.map(_tagID => addShopTag(shopID, _tagID));
+
+      // 数据库的galary表，添加数据
+      await dbDeleteGalary(shopID);
+      let imageurlPromiseAll = imageurl.map(_imageurl => dbAddGalary(shopID, _imageurl));
+
+      await Promise.all([...promiseAll, ...imageurlPromiseAll]);
       resolve();
     } catch (err) {
       reject(err);
@@ -79,6 +89,7 @@ function dbDeleteShop(shopID) {
       // 串行的，先删除shop表，再删shoptag表
       await deleteShop(shopID);
       await deleteShopTag(shopID);
+      await dbDeleteGalary(shopID);
       resolve();
     } catch (error) {
       reject(error);

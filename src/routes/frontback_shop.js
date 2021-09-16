@@ -30,6 +30,7 @@ router.delete('/page', async (req, res, next) => {
 router.put('/noimage', async (req, res, next) => {
   try {
     let data = req.body;
+    console.log('前端传送的数据：', data);
     await dbUpdateShop(data);
     res.json({ code: 20000, data: "更新成功" });
   } catch (err) {
@@ -43,7 +44,7 @@ router.put('/noimage', async (req, res, next) => {
 router.put('/page', async (req, res, next) => {
   let form = new formidable({
     keepExtensions: true,
-    uploadDir: './static/image/coverimage/',
+    uploadDir: './static/image/shop/',
     multiples: true
   });
   form.parse(req, async (err, fields, files) => {// files.file字段是由前端传送过来的
@@ -54,11 +55,12 @@ router.put('/page', async (req, res, next) => {
       if (!files.file) {
         next(new Error("图片上传失败，图片数据字段应是file"));
       }
-      // const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
-      const PATH = "http://localhost:5000/static/image/coverimage/";
-      fields.coverPicUrl = PATH + files.file.path.split('\\').slice(-1)[0];
-      // 前端传来的tagID本来是数组，到这里变成字符串了
-      fields.tagID = fields.tagID.split(',').map(i => parseInt(i))
+      // const host = "http://localhost:5000/";
+      const host = "https://mbsdoor.com:5000/";
+      fields.coverPicUrl = host + files.file.path.replace(/\\/g, '/');
+      // 前端传来的tagID本来是数组，悲formidable变成字符串了
+      fields.tagID = fields.tagID.split(',').map(i => parseInt(i));
+      fields.imageurl = fields.imageurl.split(',');
       await dbUpdateShop(fields)
       /* 可以换下面方法
       dbUpdateShop(fields).then(res => res.send("11")).catch(err => next(err)) */
@@ -71,29 +73,33 @@ router.put('/page', async (req, res, next) => {
 })
 // 增加
 router.post('/page', (req, res, next) => {
-  try {
-    let form = new formidable({
-      keepExtensions: true,
-      uploadDir: './static/image/coverimage/',
-      multiples: true
-    });
-    form.parse(req, (err, fields, files) => {// files.file字段是由前端传送过来的
+  let form = new formidable({
+    keepExtensions: true,
+    uploadDir: './static/image/shop/',
+    multiples: true
+  });
+  form.parse(req, (err, fields, files) => {// files.file字段是由前端传送过来的
+    try {
       if (err) {
         next(err);
       }
       if (!files.file) {
         next(new Error("图片上传失败，图片数据字段应是file"));
       }
-      // const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
-      const PATH = "http://localhost:5000/static/image/coverimage/";
-      fields.coverPicUrl = PATH + files.file.path.split('\\').slice(-1)[0];
+      // const host = "http://localhost:5000/";
+      const host = "https://mbsdoor.com:5000/";
+      // files.file.path :static\image\shop\upload_87e40b8a1d0e13c53eff04ef9031cee0.png
+      fields.coverPicUrl = host + files.file.path.replace(/\\/g, '/');
       fields.tagID = fields.tagID.split(',').map(i => parseInt(i));
-      fields.galaryImageUrls = fields.galaryImageUrls.split(',');
+      fields.imageurl = fields.imageurl.split(',');
+      console.log('fields:', fields)
       dbAddShop(fields).then(() => res.json({ code: 20000, data: "增加成功" })).catch(errPromise => next(errPromise));
-    })
-  } catch (error) {
-    next(error)
-  }
+    } catch (error) {
+      next(error)
+    }
+
+  })
+
 
 })
 

@@ -22,11 +22,11 @@ const PORT = 5000;
 
 
 //上线环境
-// const option = {
-//     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
-//     passphrase: '3434902qwe'
-// };
-// const httpsServer = https.createServer(option, app);
+const option = {
+    pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
+    passphrase: '3434902qwe'
+};
+const httpsServer = https.createServer(option, app);
 
 // 设置跨域允许
 app.all('*', function (req, res, next) {
@@ -74,12 +74,12 @@ app.use((err, req, res, next) => {
 });
 
 
-// //上线环境
-// httpsServer.listen(PORT, () => {
-//     console.log("server running at port ", PORT)
-// })
-
-// dev环境
-app.listen(PORT, () => {
+// 上线环境
+httpsServer.listen(PORT, () => {
     console.log("server running at port ", PORT)
 })
+
+// dev环境
+// app.listen(PORT, () => {
+//     console.log("server running at port ", PORT)
+// })

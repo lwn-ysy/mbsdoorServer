@@ -20,8 +20,7 @@ function dbGetGalary(shopID) {
 
 
 // add
-function dbAddGalary(data) {
-  let { shopID, imageurl } = data;
+function dbAddGalary(shopID, imageurl) {
   return new Promise(async (resolve, reject) => {
     try {
       await addGalary(shopID, imageurl);

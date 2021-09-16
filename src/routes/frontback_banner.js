@@ -43,16 +43,17 @@ router.post('/banner', (req, res, next) => {
   try {
     let form = new formidable({
       keepExtensions: true,
-      uploadDir: './static/image/coverimage/',
+      uploadDir: './static/image/shop/',
       multiples: true
     });
     form.parse(req, async (err, fields, files) => {
       if (err) {
         next(err);
       }
-      const PATH = "https://mbsdoor.com:5000/static/image/coverimage/";
-      let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
-      fields.picURL = picURL;
+      // const PATH = "https://mbsdoor.com:5000/static/image/shop/";
+      // let picURL = PATH + files.file.path.split('\\').slice(-1)[0];
+      const host = "https://mbsdoor.com:5000/";
+      fields.picURL = host + files.file.path.replace(/\\/g, '/');
       await dbAddBanner(fields).catch(errPromise => next(errPromise))
       res.json({ code: 20000, data: "上传成功" })
     })

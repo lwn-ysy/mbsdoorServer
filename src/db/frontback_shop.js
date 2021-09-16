@@ -78,10 +78,14 @@ function deleteShop(shopID) {
 // update 
 function updateShop(data) {
   let { shopID, categoryID, des, coverPicUrl, title } = data;
-  if (!shopID) {
-    Promise.reject('shopID不存在')
+  let sql = undefined;
+  if (!coverPicUrl) {
+    console.log('进入无coverPicUrl修改')
+    sql = `update mbsdoor.shop set categoryID='${categoryID}',des='${des}',title='${title}' where shopID='${shopID}'`;
+  } else {
+    console.log('有coverPicUrl修改')
+    sql = `update mbsdoor.shop set categoryID='${categoryID}',des='${des}',coverPicUrl='${coverPicUrl}',title='${title}' where shopID='${shopID}'`;
   }
-  let sql = `update mbsdoor.shop set categoryID='${categoryID}',des='${des}',coverPicUrl='${coverPicUrl}',title='${title}' where shopID='${shopID}'`;
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {
       if (err || !result) {
