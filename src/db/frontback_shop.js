@@ -16,7 +16,11 @@ connection.connect()
 
 
 // get 
-function getShop(shopID) {
+function getShop(data) {
+  let { shopID, currentPage } = data;
+  const BaseNumber = 10;
+  currentPage = parseInt(currentPage);
+  let offset = (currentPage - 1) * BaseNumber;
   let sql = undefined;
   if (shopID) {
     // 查询单个
@@ -29,15 +33,30 @@ function getShop(shopID) {
     group by shop.shopID 
     order by shop.createdate DESC ;`
   } else {
-    // 查询所有，限制20个
-    sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID,group_concat(galary.imageurl) as imageurl FROM shop 
-    left join category on shop.categoryID=category.categoryID 
-    left join shop_tag on shop.shopID=shop_tag.shopID 
-    left join tag on shop_tag.tagID=tag.tagID 
-    left join galary on shop.shopID=galary.shopID
-    group by shop.shopID 
-    order by shop.createdate DESC 
-    limit 20;`
+    // 查询所有，限制10个
+    if (currentPage) {
+      sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.title,category.categoryname,category.categoryID,
+      group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID,
+      group_concat(galary.imageurl) as imageurl FROM shop
+      left join category on shop.categoryID=category.categoryID 
+      left join shop_tag on shop.shopID=shop_tag.shopID 
+      left join tag on shop_tag.tagID=tag.tagID 
+      left join galary on shop.shopID=galary.shopID
+      group by shop.shopID 
+      order by shop.createdate DESC 
+      limit 10
+      offset ${offset};`
+    } else {
+      sql = `SELECT shop.shopID,shop.coverPicUrl,shop.des,shop.title,category.categoryname,category.categoryID,group_concat(tag.tagname) as tagname,group_concat(shop_tag.tagID) as tagID,group_concat(galary.imageurl) as imageurl FROM shop 
+      left join category on shop.categoryID=category.categoryID 
+      left join shop_tag on shop.shopID=shop_tag.shopID 
+      left join tag on shop_tag.tagID=tag.tagID 
+      left join galary on shop.shopID=galary.shopID
+      group by shop.shopID 
+      order by shop.createdate DESC 
+      limit 10;`
+    }
+
   }
   return new Promise((resolve, reject) => {
     connection.query(sql, (err, result) => {

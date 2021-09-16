@@ -7,8 +7,8 @@ const { dbGetShop, dbDeleteShop, dbUpdateShop, dbAddShop } = require('../control
 // 获取
 router.get('/page', async (req, res, next) => {
   try {
-    let { shopID } = req.query;
-    let result = await dbGetShop(shopID);
+    let data = req.query;
+    let result = await dbGetShop(data);
     res.json({ code: 20000, data: result })
   } catch (error) {
     next(error);

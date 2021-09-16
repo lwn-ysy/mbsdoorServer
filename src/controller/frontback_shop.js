@@ -5,10 +5,10 @@ const { deleteShopTag, addShopTag } = require('../db/frontback_shop_tag');
 const { dbDeleteGalary, dbAddGalary } = require('../controller/galary')
 
 //get
-function dbGetShop(shopID) {
+function dbGetShop(data) {
   return new Promise(async (resolve, reject) => {
     try {
-      let result = await getShop(shopID);
+      let result = await getShop(data);
       result = result.map(item => {
         if (item.tagname) {
           item.tagname = item.tagname.split(',');

@@ -17,6 +17,7 @@ const frontback_shop = require('./src/routes/frontback_shop');
 const frontback_tag = require('./src/routes/frontback_tag');
 const frontback_category = require('./src/routes/frontback_category');
 const galary_upload = require('./src/routes/galary_upload');
+const count = require('./src/routes/count');
 
 const PORT = 5000;
 
@@ -67,6 +68,7 @@ app.use('/vue-admin-template/shop', frontback_shop);
 app.use('/vue-admin-template/shop', frontback_tag);
 app.use('/vue-admin-template/shop', frontback_category);
 app.use('/vue-admin-template/shop', galary_upload);
+app.use('/vue-admin-template/shop', count);
 
 // 500界面
 app.use((err, req, res, next) => {
