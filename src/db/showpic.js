@@ -11,16 +11,16 @@ connection.connect();
 // 获取pictureUrl
 function getPictureUrl(shopID) {
     return new Promise((resolve, reject) => {
-        let sql = `select * from mbsdoor.pictureurl where shopID='${shopID}'`
+        let sql = `select group_concat(imageurl) as imageurls from mbsdoor.galary where shopID='${shopID}' group by shopID`
         connection.query(sql, (error, result) => {
             if (error) {
                 reject(error);
             }
-            let _arry = [];
-            result.forEach(item => {
-                _arry.push(item.pictureurl);
-            });
-            resolve({ urlList: _arry });
+            let list = []
+            if (result[0].imageurls) {
+                list = result[0].imageurls.split(',');
+            }
+            resolve({ urlList: list });
         })
     })
 };
@@ -55,12 +55,12 @@ function getIsDianzan(shopID, openID, shopData) {
 // 获取点赞数量
 function getDianzanCount(shopID, shopData) {
     return new Promise((resolve, reject) => {
-        let sql = `select count(1) from mbsdoor.dianzan where shopID='${shopID}'`;
+        let sql = `select count(dianzanID) from mbsdoor.dianzan where shopID='${shopID}'`;
         connection.query(sql, (error, result) => {
             if (error) {
                 reject(error);
             }
-            shopData.dianzanCount = result[0]['count(1)'];
+            shopData.dianzanCount = result[0]['count(dianzanID)'];
             resolve(shopData);
         })
     })
@@ -98,13 +98,18 @@ function getShopList(shopID, shopData) {
 // 获取所有的数据
 function getShopData(shopID, openID) {
     return new Promise(async (resolve, reject) => {
-        let data_pictureUrl = await getPictureUrl(shopID);
-        let data_shopDetail = await getShopDetail(shopID, data_pictureUrl);
-        let data_isDianzan = await getIsDianzan(shopID, openID, data_shopDetail);
-        let data_dianzanCount = await getDianzanCount(shopID, data_isDianzan);
-        let data_isCollected = await getIsCollected(shopID, openID, data_dianzanCount);
-        let data_shopList = await getShopList(shopID, data_isCollected);
-        resolve(data_shopList)
+        try {
+            let data_pictureUrl = await getPictureUrl(shopID);
+            let data_shopDetail = await getShopDetail(shopID, data_pictureUrl);
+            let data_isDianzan = await getIsDianzan(shopID, openID, data_shopDetail);
+            let data_dianzanCount = await getDianzanCount(shopID, data_isDianzan);
+            let data_isCollected = await getIsCollected(shopID, openID, data_dianzanCount);
+            let data_shopList = await getShopList(shopID, data_isCollected);
+            resolve(data_shopList);
+        } catch (error) {
+            reject(error)
+        }
+
     })
 }
 

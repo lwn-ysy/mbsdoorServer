@@ -8,7 +8,6 @@ router.get('/shop', async (req, res, next) => {
     let { openID, shopID } = req.query;
     try {
         let shopData = await getShopData(shopID, openID);
-        console.log('shopID:', shopID);
         res.json(shopData);
     } catch (error) {
         next(error);

@@ -8,7 +8,7 @@ const { getIndexBannerlist, getIndexCategoryList, getShopList_dianzan, getShopLi
 // index界面，banner路由
 router.get('/banner', async (req, res, next) => {
     try {
-        const bannerData = await getIndexBannerlist(); // return的是res数据，而不使用await，return的是promise
+        const bannerData = await getIndexBannerlist(); 
         res.json(bannerData);
     } catch (err) {
         next(err);
@@ -41,14 +41,4 @@ router.get('/shop', async (req, res, next) => {
     }
 })
 
-// index界面
-router.get('/index/tag', async (req, res, next) => {
-    let shopID = req.query.shopID;
-    try {
-        const tagData = await getTag(shopID);
-        res.json(tagData);
-    } catch (err) {
-        next(err);
-    }
-})
 module.exports = router;
