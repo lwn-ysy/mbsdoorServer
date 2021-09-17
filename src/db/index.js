@@ -58,7 +58,7 @@ function getZanCount(shopList, shopID, oepnID) {
             }
             // 处理数据
             shopList.dianzan = result[0].dianzan;
-            shopList.tags = shopList.tags.split(',');
+            shopList.tags = shopList.tags?.split(',') || [];
             connection.query(sql_isDianzan, (er_1, res_1) => {
                 if (er_1) {
                     reject(er_1);
