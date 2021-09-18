@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const { getShopData } = require('../db/showpic');
+const { getShopData } = require('../db/show');
 
 
 router.get('/shop', async (req, res, next) => {

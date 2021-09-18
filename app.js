@@ -8,7 +8,8 @@ const bodyParser = require('body-parser');
 const personal = require('./src/routes/personal');
 const index = require('./src/routes/index');
 const login = require('./src/routes/login');
-const showpic = require('./src/routes/showpic');
+const show = require('./src/routes/show');
+const blog = require('./src/routes/blog');
 const frontback_login = require('./src/routes/frontback_login');
 const frontback_account = require('./src/routes/frontback_account');
 const frontback_role = require('./src/routes/frontback_role');
@@ -57,7 +58,8 @@ app.use(bodyParser.json());
 app.use('/personal', personal);
 app.use('/index', index);
 app.use('/login', login);
-app.use('/showpic', showpic);
+app.use('/show', show);
+app.use('/blog', blog);
 
 // 后台系统管理vue项目
 app.use('/vue-admin-template/user', frontback_login);
