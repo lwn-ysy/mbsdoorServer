@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router();
 
-const { dbGetBlog } = require('../controller/blog');
+const { dbGetBlog, DbGetSearchBlog } = require('../controller/blog');
 
 
 router.get('/', async (req, res, next) => {
@@ -12,8 +12,17 @@ router.get('/', async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-
 })
 
+
+router.get('/search', async (req, res, next) => {
+  let data = req.query;
+  try {
+    let blogLists = await DbGetSearchBlog(data);
+    res.json(blogLists);
+  } catch (error) {
+    next(error);
+  }
+})
 
 module.exports = router;

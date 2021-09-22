@@ -23,7 +23,7 @@ const count = require('./src/routes/count');
 const PORT = 5000;
 
 
-//上线环境
+//上线环境 安装ssl证书
 const option = {
     pfx: fs.readFileSync('./certificate/mbsdoor.com.pfx'),
     passphrase: '3434902qwe'
@@ -53,6 +53,11 @@ app.use('/static', express.static('static', {
 }));
 
 app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+    let html = fs.readFileSync(path.resolve(__dirname, 'static/dist/index.html'), 'utf-8');
+    res.send(html)
+})
 
 //常规路由--微信小程序
 app.use('/personal', personal);

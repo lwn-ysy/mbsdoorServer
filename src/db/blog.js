@@ -29,7 +29,22 @@ function getBlog(offset) {
   })
 }
 
+function getSearchBlog(data) {
+  let { key } = data;
+  let sql = `SELECT blog.*,group_concat(blog_imageurl.imageurl) as imageurls FROM mbsdoor.blog
+  left join blog_imageurl on blog.blogID=blog_imageurl.blogID
+  where address like '%${key}%' or content like '%${key}%'
+  group by blog.blogID`;
+  return new Promise((resolve, reject) => {
+    connection.query(sql, (err, result) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(result);
+    })
+  })
+}
 
 
-
-module.exports = { getBlog };
+module.exports = { getBlog, getSearchBlog };
