@@ -54,6 +54,7 @@ app.use('/static', express.static('static', {
 
 app.use(bodyParser.json());
 
+// 主界面入口
 app.get('/', (req, res) => {
     let html = fs.readFileSync(path.resolve(__dirname, 'static/dist/index.html'), 'utf-8');
     res.send(html)
