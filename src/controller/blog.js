@@ -11,6 +11,7 @@ function dbGetBlog(offset) {
       result = result.map(item => {
         item.date = dayjs(parseInt(item.date)).format('YYYY-MM-DD');
         item.imageurls = item.imageurls ? item.imageurls.split(',') : [];
+        item.miniImageUrls = item.miniImageUrls ? item.miniImageUrls.split(',') : [];
         return item;
       })
       resolve(result);
@@ -29,6 +30,7 @@ function DbGetSearchBlog(data) {
       result = result.map(item => {
         item.date = dayjs(parseInt(item.date)).format('YYYY-MM-DD');
         item.imageurls = item.imageurls ? item.imageurls.split(',') : [];
+        item.miniImageUrls = item.miniImageUrls ? item.miniImageUrls.split(',') : [];
         return item;
       })
       resolve(result);
